@@ -1,8 +1,8 @@
 #include <Wire.h>
 #include <MPU6050.h>
+#include "motor_control.h"
 
 MPU6050 mpu;
-
 
 #define M1_IN1  14
 #define M1_IN2  27
@@ -35,18 +35,9 @@ void setup() {
     Serial.println("MPU6050 connected.");
   }
 
-  pinMode(M1_IN1, OUTPUT); pinMode(M1_IN2, OUTPUT);
-  pinMode(M2_IN1, OUTPUT); pinMode(M2_IN2, OUTPUT);
-  pinMode(M3_IN1, OUTPUT); pinMode(M3_IN2, OUTPUT);
-
-  ledcSetup(pwmChannel1, freq, resolution);
-  ledcAttachPin(M1_EN, pwmChannel1);
-
-  ledcSetup(pwmChannel2, freq, resolution);
-  ledcAttachPin(M2_EN, pwmChannel2);
-
-  ledcSetup(pwmChannel3, freq, resolution);
-  ledcAttachPin(M3_EN, pwmChannel3);
+  setupMotor(M1_IN1, M1_IN2, M1_EN, pwmChannel1, freq, resolution);
+  setupMotor(M2_IN1, M2_IN2, M2_EN, pwmChannel2, freq, resolution);
+  setupMotor(M3_IN1, M3_IN2, M3_EN, pwmChannel3, freq, resolution);
 }
 
 void loop() {
@@ -62,19 +53,13 @@ void loop() {
   Serial.println(gz);
 
   if (ay > 10000) {
-    motorForward(M1_IN1, M1_IN2);
-    motorForward(M2_IN1, M2_IN2);
-    motorForward(M3_IN1, M3_IN2);
-    ledcWrite(pwmChannel1, 180);
-    ledcWrite(pwmChannel2, 180);
-    ledcWrite(pwmChannel3, 180);
+    driveMotor(M1_IN1, M1_IN2, pwmChannel1, true);
+    driveMotor(M2_IN1, M2_IN2, pwmChannel2, true);
+    driveMotor(M3_IN1, M3_IN2, pwmChannel3, true);
   } else if (ay < -10000) {
-    motorReverse(M1_IN1, M1_IN2);
-    motorReverse(M2_IN1, M2_IN2);
-    motorReverse(M3_IN1, M3_IN2);
-    ledcWrite(pwmChannel1, 180);
-    ledcWrite(pwmChannel2, 180);
-    ledcWrite(pwmChannel3, 180);
+    driveMotor(M1_IN1, M1_IN2, pwmChannel1, false);
+    driveMotor(M2_IN1, M2_IN2, pwmChannel2, false);
+    driveMotor(M3_IN1, M3_IN2, pwmChannel3, false);
   } else {
     stopMotor(M1_IN1, M1_IN2, pwmChannel1);
     stopMotor(M2_IN1, M2_IN2, pwmChannel2);
@@ -82,20 +67,4 @@ void loop() {
   }
 
   delay(200);
-}
-
-void motorForward(int in1, int in2) {
-  digitalWrite(in1, HIGH);
-  digitalWrite(in2, LOW);
-}
-
-void motorReverse(int in1, int in2) {
-  digitalWrite(in1, LOW);
-  digitalWrite(in2, HIGH);
-}
-
-void stopMotor(int in1, int in2, int pwmChannel) {
-  digitalWrite(in1, LOW);
-  digitalWrite(in2, LOW);
-  ledcWrite(pwmChannel, 0);
 }

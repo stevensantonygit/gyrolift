@@ -1,0 +1,6 @@
+gyro_offset_x: -45
+gyro_offset_y: 12
+gyro_offset_z: -8
+accel_offset_x: 102
+accel_offset_y: -44
+accel_offset_z: 1700
