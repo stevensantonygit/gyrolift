@@ -62,6 +62,7 @@ Find all source code, circuit schematics, and logs in this repository:
 
 - **Stevens and Johann**  
 - **[stevensantonygit](https://github.com/stevensantonygit)**
+- **[JohannJosephAntony](https://github.com/JohannJosephAntony)**
 
 Feel free to fork, contribute, or reach out with ideas!
 
